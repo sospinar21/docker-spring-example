@@ -33,3 +33,7 @@ out/
 
 ### VS Code ###
 .vscode/
+
+# ignore db dumps
+db/dumps/
+!db/dumps/.keep
