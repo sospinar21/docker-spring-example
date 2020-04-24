@@ -12,7 +12,7 @@ services:
     ports:
       - 5432:5432
     environment:
-      POSTGRES_PASSWORD: 3x4mpl3P455w0rd
+      POSTGRES_PASSWORD: 112233
 
   web:
     image: vovimayhem/spring-demo:development
