@@ -3,7 +3,7 @@ version: "3.7"
 volumes:
   postgres_data:
 
-services: 
+services:
   postgres:
     image: postgres:12-alpine
     volumes:
@@ -12,19 +12,12 @@ services:
     ports:
       - 5432:5432
     environment:
-      POSTGRES_PASSWORD: 123
+      POSTGRES_PASSWORD: 3x4mpl3P455w0rd
 
   web:
     image: vovimayhem/spring-demo:development
     build:
       context: .
-    ports:
-      - 8080:8080
+      # target: development
     volumes:
-      - .:usr/src
-    depends_on:
-      - postgres
-    environment: 
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/demo_development
-      SPRING_DATASOURCE_USERNAME: postgres
-      SPRING_DATASOURCE_PASSWORD: 123
+      - .:/usr/src
