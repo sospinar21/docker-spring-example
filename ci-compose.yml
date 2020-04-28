@@ -1,0 +1,31 @@
+# alias ci-compose="docker-compose -f docker-compose.yml -f ci-compose.yml"
+
+version: "3.7"
+
+volumes:
+  gradle_user_home:
+
+services:
+  test:
+    image: docker.pkg.github.com/sospinar21/docker-spring-example/spring-demo:testing
+    build:
+      context: .
+      target: testing
+    depends_on:
+      - postgres
+    command: gradle test
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/demo_development
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: 112233
+  builder:  
+    image: docker.pkg.github.com/sospinar21/docker-spring-example/spring-demo:builder
+    build:
+      context: .
+      target: builder
+    
+  release: #Se genera el release 
+    image: docker.pkg.github.com/sospinar21/docker-spring-example/spring-demo:builder
+    build:
+      context: .
+      target: release

@@ -1,0 +1,4 @@
+#! /bin/sh
+
+exec docker-compose --file docker-compose.yml -f ci-compose.yml $@
+© 2020 GitHub, Inc.

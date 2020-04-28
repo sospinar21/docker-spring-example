@@ -33,3 +33,10 @@ out/
 
 ### VS Code ###
 .vscode/
+
+# ignore db dumps
+db/dumps/
+!db/dumps/.keep
+
+heroku/deploy/
+!heroku/deploy/.keep
