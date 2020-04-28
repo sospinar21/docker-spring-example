@@ -33,4 +33,19 @@ COPY . /usr/src
 
 CMD [ "gradle", "test" ]
 
-# ==============================================================================
+# STAGE BUILDER ==========================================================================================================
+
+FROM testing AS builder
+
+RUN gradle build -x test
+
+# STAGER RELEASE Release se comienza con a imagen oficiakl y en lugar de instalar todo solo copiamos lo que sirve de la maquina anterior, el jar
+FROM openjdk:14-jdk-buster AS release
+
+COPY --from=builder /usr/src/build/libs/demo-0.0.1-SNAPSHOT.jar .
+
+RUN apk add --no-cache curl
+
+CMD [ "java", "-jar", "demo.0.0.1-SNAPSHOT.jar" ]
+
+# Set the default command

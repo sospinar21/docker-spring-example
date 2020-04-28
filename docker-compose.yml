@@ -13,11 +13,3 @@ services:
       - 5432:5432
     environment:
       POSTGRES_PASSWORD: 112233
-
-  web:
-    image: vovimayhem/spring-demo:development
-    build:
-      context: .
-      # target: development
-    volumes:
-      - .:/usr/src
