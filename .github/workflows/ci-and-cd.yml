@@ -1,5 +1,5 @@
 name: CI & CD
-​
+
 on:
   push:
     branches:
@@ -7,7 +7,7 @@ on:
   pull_request:
     branches:
       - master
-​
+
 jobs:
   test_build:
     name: Build Test Image
@@ -15,19 +15,19 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v1
-​
+
       - name: Add CI/CD scripts to system path
         run: echo "::add-path::${GITHUB_WORKSPACE}/.github/workflows/bin"
-​
+
       - name: Login to Github Package Registry for Docker
         run: docker login docker.pkg.github.com -u ${{ github.actor }} --password ${{ secrets.GITHUB_TOKEN }}
-​
+
       - name: Build Test Image
         run: ci-compose build test
-​
+
       - name: Push Test Image
         run: ci-compose push test
-​
+
   run_tests:
     name: Run Tests
     runs-on: ubuntu-latest
@@ -35,19 +35,19 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v1
-​
+
       - name: Add CI/CD scripts to system path
         run: echo "::add-path::${GITHUB_WORKSPACE}/.github/workflows/bin"
-​
+
       - name: Login to Github Package Registry for Docker
         run: docker login docker.pkg.github.com -u ${{ github.actor }} --password ${{ secrets.GITHUB_TOKEN }}
-​
+
       - name: Pull Test Image
         run: ci-compose pull test
-​
+
       - name: Run tests
         run: ci-compose run test gradle test
-​
+
   release_build:
     name: Build Release Image
     runs-on: ubuntu-latest
@@ -55,25 +55,25 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v1
-​
+
       - name: Add CI/CD scripts to system path
         run: echo "::add-path::${GITHUB_WORKSPACE}/.github/workflows/bin"
-​
+
       - name: Login to Github Package Registry for Docker
         run: docker login docker.pkg.github.com -u ${{ github.actor }} --password ${{ secrets.GITHUB_TOKEN }}
-​
+
       - name: Pull Test Image
         run: ci-compose pull test
-​
+
       - name: Build Builder Image
         run: ci-compose build builder
-​
+
       - name: Build Release Image
         run: ci-compose build release
-​
+
       - name: Push the Release Image
         run: ci-compose push release
-​
+
   staging_deploy:
     name: Deploy to Staging
     runs-on: ubuntu-latest
@@ -86,24 +86,24 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v1
-​
+
       - name: Login to Github Package Registry for Docker
         run: docker login docker.pkg.github.com -u ${{ github.actor }} --password ${{ secrets.GITHUB_TOKEN }}
-​
+
       - name: Login to Heroku Container Registry
         run: heroku container:login
-​
+
       - name: Process Heroku Dockerfile Templates
         run: |
           envsubst < .heroku/templates/web.Dockerfile > .heroku/deploy/Dockerfile.web
           envsubst < .heroku/templates/release.Dockerfile > .heroku/deploy/Dockerfile.release
-​
+
       - name: Push images to Heroku
         run: cd .heroku/deploy && heroku container:push --recursive --app ${HEROKU_APP_NAME}
-​
+
       - name: Release images to Heroku
         run: heroku container:release release web --app ${HEROKU_APP_NAME}
-​
+
   production_deploy:
     name: Deploy to Production
     runs-on: ubuntu-latest
@@ -116,20 +116,20 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v1
-​
+
       - name: Login to Github Package Registry for Docker
         run: docker login docker.pkg.github.com -u ${{ github.actor }} --password ${{ secrets.GITHUB_TOKEN }}
-​
+
       - name: Login to Heroku Container Registry
         run: heroku container:login
-​
+
       - name: Process Heroku Dockerfile Templates
         run: |
           envsubst < .heroku/templates/web.Dockerfile > .heroku/deploy/Dockerfile.web
           envsubst < .heroku/templates/release.Dockerfile > .heroku/deploy/Dockerfile.release
-​
+
       - name: Push images to Heroku
         run: cd .heroku/deploy && heroku container:push --recursive --app ${HEROKU_APP_NAME}
-​
+
       - name: Release images to Heroku
         run: heroku container:release release web --app ${HEROKU_APP_NAME}
